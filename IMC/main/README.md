@@ -29,7 +29,7 @@ Gradle Scripts >
 
 
       
-      >build.gradel (Module)
+      >build.gradle (Module)
       
           apply plugin: 'com.android.application'
 
