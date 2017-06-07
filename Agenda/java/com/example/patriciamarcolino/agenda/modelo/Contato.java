@@ -1,10 +1,12 @@
 package com.example.patriciamarcolino.agenda.modelo;
 
+import java.io.Serializable;
+
 /**
  * Created by patricia.marcolino on 02/06/2017.
  */
-
-public class Contato {
+// esse implements foi usado por causa do Intent, de click simples.
+public class Contato implements Serializable{
     private String nome;
     private String telefone;
     private Long id;
@@ -25,7 +27,7 @@ public class Contato {
         this.telefone = telefone;
     }
 
-    public Long getId(long id) {
+    public Long getId() {
         return this.id;
     }
 

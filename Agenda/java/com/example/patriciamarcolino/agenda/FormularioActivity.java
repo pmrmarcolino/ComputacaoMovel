@@ -1,5 +1,6 @@
 package com.example.patriciamarcolino.agenda;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -21,8 +22,15 @@ public class FormularioActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_formulario);
+        helper = new FormularioHelper(this);
+        Intent intent = getIntent();
+        Contato contato = (Contato) intent.getSerializableExtra("contato");
 
-         helper = new FormularioHelper(this);
+        // se for na edição de aluno
+        if (contato != null){
+            helper.preencheFormulario(contato);
+        }
+
 
     }
 
@@ -42,7 +50,12 @@ public class FormularioActivity extends AppCompatActivity {
             case R.id.menu_formulario_ok:
                 Contato contato = helper.pegaContato();
                 ContatoDAO dao = new ContatoDAO(this);
-                dao.insere(contato);
+                //para a edição de aluno
+                if(contato.getId() != null){
+                    dao.altera(contato);
+                }else{
+                    dao.insere(contato);
+                }
                 dao.close();
 
                 Toast.makeText(FormularioActivity.this, "Contato "+contato.getNome()+" criado com sucesso!", Toast.LENGTH_SHORT).show();

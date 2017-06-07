@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.annotation.NonNull;
 
 import com.example.patriciamarcolino.agenda.modelo.Contato;
 
@@ -38,13 +39,19 @@ public class ContatoDAO extends SQLiteOpenHelper{
     public void insere(Contato contato) {
         SQLiteDatabase db = getWritableDatabase();
 
+        ContentValues dados = getContentValuesContato(contato);
+
+        // trata o conteudo
+        db.insert("Contatos",null,dados);
+    }
+
+    @NonNull
+    private ContentValues getContentValuesContato(Contato contato) {
         ContentValues dados = new ContentValues();
 
         dados.put("nome", contato.getNome());
         dados.put("telefone", contato.getTelefone());
-
-        // trata o conteudo
-        db.insert("Contatos",null,dados);
+        return dados;
     }
 
     public List<Contato> buscaContato() {
@@ -57,7 +64,7 @@ public class ContatoDAO extends SQLiteOpenHelper{
 
         while(cursor.moveToNext()){
             Contato contato = new Contato();
-            contato.getId(cursor.getLong(cursor.getColumnIndex("id")));
+            contato.setId(cursor.getLong(cursor.getColumnIndex("id")));
             contato.setNome(cursor.getString(cursor.getColumnIndex("nome"))) ;
             contato.setTelefone(cursor.getString(cursor.getColumnIndex("telefone")));
             contatos.add(contato);
@@ -66,5 +73,19 @@ public class ContatoDAO extends SQLiteOpenHelper{
         cursor.close();
 
         return contatos;
+    }
+
+    public void deleta(Contato contato) {
+        SQLiteDatabase db = getWritableDatabase();
+        String [] params = {contato.getId().toString()};
+        // essa ? é substituida pelo params
+        db.delete("Contatos", "id = ?", params);
+    }
+
+    public void altera(Contato contato) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues dados = getContentValuesContato(contato);
+        String [] params = {contato.getId().toString()};
+        db.update("Contatos",dados,"id = ?", params);
     }
 }
